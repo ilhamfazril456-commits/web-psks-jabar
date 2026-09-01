@@ -25,10 +25,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGrid, appSet
     
     // Filter out invalid local OS file paths (e.g. C:\Users\...) which browser security blocks
     if (!raw || raw === 'LOCAL_STORAGE_SAVED_VIDEO' || raw.startsWith('C:') || raw.startsWith('file:') || raw.includes('Users\\')) {
-      return '';
+      return OFFICIAL_ECOOFFICE_VIDEO;
     }
 
-    return raw;
+    return raw || OFFICIAL_ECOOFFICE_VIDEO;
   };
 
   const activeVideo = getActiveVideoUrl();
@@ -45,7 +45,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGrid, appSet
   const getActiveBgMode = () => {
     const firestoreMode = appSettings?.bgMode;
     const localMode = typeof window !== 'undefined' ? localStorage.getItem('dinsos_bg_mode') : null;
-    return (firestoreMode || localMode || 'photo') as 'photo' | 'video';
+    return (firestoreMode || localMode || 'video') as 'photo' | 'video';
   };
 
   const bgMode = getActiveBgMode();

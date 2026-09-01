@@ -524,10 +524,12 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
     ]);
   }, [session?.nama, session?.wilayah, session?.role, session?.statusActive, currentRole, isDeveloperUser]);
 
-  // Click outside listener
+  // Click outside listener (Safe mouse detection for desktop, avoids mobile touch jitter)
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (widgetRef.current && !widgetRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (!target || !(target instanceof Node) || !target.isConnected) return;
+      if (widgetRef.current && !widgetRef.current.contains(target)) {
         setIsOpen(false);
         setIsCatalogOpen(false);
       }
@@ -535,11 +537,9 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
 
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
     };
   }, [isOpen]);
 
@@ -556,6 +556,7 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
 
   // Toggle open and rotate questions each time user enters/opens widget
   const handleToggleWidget = () => {
+    setIsHovered(false);
     if (!isOpen) {
       setRotationSeed((prev) => prev + 1);
     }
@@ -772,20 +773,37 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
   };
 
   return (
-    <div
-      ref={widgetRef}
-      className="fixed bottom-[70px] right-3.5 sm:bottom-[88px] sm:right-6 z-50 flex flex-col items-end select-none"
-    >
-      {/* Floating Trigger Button */}
-      <button
-        type="button"
-        onClick={handleToggleWidget}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onTouchStart={() => setIsHovered(true)}
-        className="group relative flex items-center bg-gradient-to-r from-emerald-700 via-teal-800 to-slate-900 text-white p-2.5 sm:p-3.5 rounded-full shadow-[0_8px_25px_rgba(16,185,129,0.4)] border border-emerald-500/50 transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:shadow-[0_10px_30px_rgba(16,185,129,0.6)] hover:scale-105 active:scale-95 cursor-pointer select-none touch-manipulation ring-2 ring-emerald-400/40"
-        title="Tanya Asisten AI PSKS JABAR"
+    <>
+      {/* Mobile Backdrop (Intentional tap outside to close, prevents accidental touchstart auto-close while typing/scrolling on mobile) */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => {
+              setIsOpen(false);
+              setIsCatalogOpen(false);
+            }}
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px] z-40 sm:hidden"
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
+
+      <div
+        ref={widgetRef}
+        className="fixed bottom-[70px] right-3.5 sm:bottom-[88px] sm:right-6 z-50 flex flex-col items-end select-none"
       >
+        {/* Floating Trigger Button */}
+        <button
+          type="button"
+          onClick={handleToggleWidget}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="group relative flex items-center bg-gradient-to-r from-emerald-700 via-teal-800 to-slate-900 text-white p-2.5 sm:p-3.5 rounded-full shadow-[0_8px_25px_rgba(16,185,129,0.4)] border border-emerald-500/50 transition-all duration-300 cubic-bezier(0.16,1,0.3,1) hover:shadow-[0_10px_30px_rgba(16,185,129,0.6)] hover:scale-105 active:scale-95 cursor-pointer select-none touch-manipulation ring-2 ring-emerald-400/40"
+          title="Tanya Asisten AI PSKS JABAR"
+        >
         {/* Soft Glowing Ring Layer with Gentle Opacity Transition */}
         <span
           className={`absolute -inset-0.5 rounded-full bg-gradient-to-r from-emerald-400 to-amber-300 blur-sm transition-opacity duration-300 pointer-events-none ${
@@ -819,10 +837,10 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
           )}
         </div>
 
-        {/* Smooth Opacity & Width Transition Text Label - Optically Centered (Prevents Layout Shift) */}
+        {/* Smooth Opacity & Width Transition Text Label - Optically Centered on desktop, stays compact round circle on mobile */}
         {!isOpen && (
           <div
-            className={`relative flex items-center overflow-hidden transition-all duration-300 cubic-bezier(0.16,1,0.3,1) ${
+            className={`relative hidden sm:flex items-center overflow-hidden transition-all duration-300 cubic-bezier(0.16,1,0.3,1) ${
               isHovered ? 'max-w-[180px] opacity-100 ml-2.5' : 'max-w-0 opacity-0 ml-0'
             }`}
           >
@@ -1276,5 +1294,6 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 };

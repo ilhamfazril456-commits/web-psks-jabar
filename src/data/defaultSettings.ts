@@ -6,7 +6,7 @@ import psksLogoAsset from '../assets/images/psks_jabar_logo_1787709115486.jpg';
 
 export const DEFAULT_APP_SETTINGS: AppSettings = {
   logoUrl: psksLogoAsset,
-  bgMode: 'photo',
+  bgMode: 'video',
   bgVideoUrl: OFFICIAL_ECOOFFICE_VIDEO,
   kadinasPhotoUrl: OFFICIAL_KADINAS_PHOTO,
   floatingWaNumber: '6289602421065',

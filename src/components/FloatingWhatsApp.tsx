@@ -71,9 +71,9 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ appSettings,
           </span>
         </div>
 
-        {/* Smooth Expandable Text Label */}
+        {/* Smooth Expandable Text Label (Desktop only, stays compact round circle on mobile) */}
         <div
-          className={`relative flex items-center overflow-hidden transition-all duration-300 cubic-bezier(0.16,1,0.3,1) ${
+          className={`relative hidden sm:flex items-center overflow-hidden transition-all duration-300 cubic-bezier(0.16,1,0.3,1) ${
             isHovered ? 'max-w-[220px] opacity-100 ml-2.5' : 'max-w-0 opacity-0 ml-0'
           }`}
         >

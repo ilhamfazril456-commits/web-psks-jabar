@@ -21,6 +21,7 @@ import {
 import { hashPassword } from './utils/crypto';
 import { stripDangerousTags } from './utils/sanitize';
 import { DEFAULT_APP_SETTINGS } from './data/defaultSettings';
+import { OFFICIAL_ECOOFFICE_VIDEO } from './assets/officialEcoOfficeVideo';
 import { DEFAULT_ANNOUNCEMENT_CONFIG } from './data/defaultAnnouncement';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
@@ -257,9 +258,16 @@ export default function App() {
             const local = localStorage.getItem('dinsos_bg_photo_url');
             if (local && local !== 'LOCAL_STORAGE_SAVED_PHOTO') data.bgPhotoUrl = local;
           }
-          if (data.bgVideoUrl === 'LOCAL_STORAGE_SAVED_VIDEO') {
+          if (data.bgVideoUrl === 'LOCAL_STORAGE_SAVED_VIDEO' || !data.bgVideoUrl) {
             const local = localStorage.getItem('dinsos_bg_video_url');
-            if (local && local !== 'LOCAL_STORAGE_SAVED_VIDEO') data.bgVideoUrl = local;
+            if (local && local !== 'LOCAL_STORAGE_SAVED_VIDEO') {
+              data.bgVideoUrl = local;
+            } else {
+              data.bgVideoUrl = OFFICIAL_ECOOFFICE_VIDEO;
+            }
+          }
+          if (!data.bgMode) {
+            data.bgMode = 'video';
           }
           if (data.announcement) {
             try {
