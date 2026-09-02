@@ -389,12 +389,11 @@ export const JabarRegionalMap: React.FC<JabarRegionalMapProps> = ({
       if (pillarFilter !== 'ALL' && pillarKey !== pillarFilter) return;
 
       records.forEach((record) => {
-        const rawWil = record.wilayah || 'Kota Bandung';
-        const matchedRegion = KAB_KOTA_ONLY.find(
-          (k) => k.toLowerCase().trim() === rawWil.toLowerCase().trim()
-        ) || KAB_KOTA_ONLY.find(
-          (k) => rawWil.toLowerCase().includes(k.replace(/kab\.|kota\s/i, '').trim().toLowerCase())
-        );
+        const rawWil = (record.wilayah || '').trim();
+        const matchedRegion =
+          KAB_KOTA_ONLY.find((k) => k.toLowerCase() === rawWil.toLowerCase()) ||
+          KAB_KOTA_ONLY.find((k) => rawWil.toLowerCase().includes(k.replace(/kab\.|kota\s/i, '').trim().toLowerCase())) ||
+          'Kota Bandung';
 
         if (matchedRegion && stats[matchedRegion]) {
           stats[matchedRegion].total += 1;

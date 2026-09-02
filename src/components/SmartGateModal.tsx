@@ -168,21 +168,14 @@ export const SmartGateModal: React.FC<SmartGateModalProps> = ({
         }
       }
 
-      // If adminAccounts is available, also check for any registered user accounts (role === 'user')
-      if (adminAccounts && adminAccounts.length > 0) {
-        const activeUserAccounts = adminAccounts
-          .filter((a) => a.role === 'user')
-          .map((a) => (a.username || '').trim())
-          .filter((u) => u.length > 0);
-
-        const combined = Array.from(new Set([...registeredList, ...activeUserAccounts]));
+      // If database is available, clean up deleted accounts that were originally registered on this device
+      if (adminAccounts && adminAccounts.length > 0 && registeredList.length > 0) {
         const activeAllUsernames = adminAccounts.map((a) => (a.username || '').toLowerCase().trim());
-        const validAccounts = combined.filter((uname) => activeAllUsernames.includes(uname.toLowerCase()));
-
+        const validLocalAccounts = registeredList.filter((uname) => activeAllUsernames.includes(uname.toLowerCase()));
         try {
-          localStorage.setItem('simpsks_device_registered_accounts', JSON.stringify(validAccounts));
+          localStorage.setItem('simpsks_device_registered_accounts', JSON.stringify(validLocalAccounts));
         } catch {}
-        return validAccounts;
+        return validLocalAccounts;
       }
 
       return Array.from(new Set(registeredList));

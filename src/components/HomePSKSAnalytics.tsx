@@ -98,12 +98,14 @@ const PILLAR_COLORS: Record<string, { hex: string; bg: string; text: string }> =
   slrt_puskesos: { hex: '#047857', bg: 'bg-emerald-700', text: 'text-emerald-800' },
 };
 
-// Normalize region naming
+// Normalize region naming to match 27 Kab/Kota strictly
 const normalizeRegion = (raw: string): string => {
-  let s = (raw || '').trim();
-  if (s === 'Kab. Bandung Barat' || s === 'Kabupaten Bandung Barat') return 'Kab. Bandung Barat';
-  if (s === 'Kab. Bandung' || s === 'Kabupaten Bandung') return 'Kab. Bandung';
-  if (s === 'Kota Bandung') return 'Kota Bandung';
+  const s = (raw || '').trim();
+  if (!s || s === 'Prov. Jabar' || s === 'Semua Wilayah') return 'Kota Bandung';
+  const direct = KAB_KOTA_ONLY.find((k) => k.toLowerCase() === s.toLowerCase());
+  if (direct) return direct;
+  const partial = KAB_KOTA_ONLY.find((k) => s.toLowerCase().includes(k.replace(/kab\.|kota\s/i, '').trim().toLowerCase()));
+  if (partial) return partial;
   if (s.startsWith('Kabupaten ')) return s.replace('Kabupaten ', 'Kab. ');
   return s;
 };

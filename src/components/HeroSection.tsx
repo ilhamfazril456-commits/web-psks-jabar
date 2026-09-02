@@ -3,20 +3,16 @@ import { ArrowDownCircle } from 'lucide-react';
 import { AppSettings } from '../types';
 import { OFFICIAL_ECOOFFICE_VIDEO } from '../assets/officialEcoOfficeVideo';
 
-import dinsosBuildingPhoto from '../assets/images/dinsos_jabar_hero_bg_1785640712371.jpg';
-
 interface HeroSectionProps {
   onScrollToGrid: () => void;
   appSettings?: AppSettings;
 }
 
-const MAIN_HERO_BG_PHOTO = dinsosBuildingPhoto;
-
 export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGrid, appSettings }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoError, setVideoError] = useState(false);
 
-  // Determine active video URL (Firestore as primary authority)
+  // Determine active video URL
   const getActiveVideoUrl = () => {
     const firestore = appSettings?.bgVideoUrl;
     const local = typeof window !== 'undefined' ? (localStorage.getItem('dinsos_bg_video_url') || localStorage.getItem('dinsos_eco_video_url')) : null;
@@ -33,55 +29,41 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGrid, appSet
 
   const activeVideo = getActiveVideoUrl();
 
-  const getActivePhotoUrl = () => {
-    const firestore = appSettings?.bgPhotoUrl;
-    const local = typeof window !== 'undefined' ? localStorage.getItem('dinsos_bg_photo_url') : null;
-    const raw = (firestore && firestore !== 'LOCAL_STORAGE_SAVED_PHOTO') ? firestore : local;
-    return raw || MAIN_HERO_BG_PHOTO;
-  };
+  // If user explicitly uploads their own custom photo in settings, use it. Otherwise, strictly NO AI photo.
+  const customUserPhoto = appSettings?.bgPhotoUrl && appSettings.bgPhotoUrl !== 'LOCAL_STORAGE_SAVED_PHOTO' 
+    ? appSettings.bgPhotoUrl 
+    : (typeof window !== 'undefined' ? localStorage.getItem('dinsos_bg_photo_url') : null);
 
-  const activePhoto = getActivePhotoUrl();
-
-  const getActiveBgMode = () => {
-    const firestoreMode = appSettings?.bgMode;
-    const localMode = typeof window !== 'undefined' ? localStorage.getItem('dinsos_bg_mode') : null;
-    return (firestoreMode || localMode || 'video') as 'photo' | 'video';
-  };
-
-  const bgMode = getActiveBgMode();
-  const isVideoActive = bgMode === 'video' && !!activeVideo && !videoError;
+  const bgMode = appSettings?.bgMode || (typeof window !== 'undefined' ? localStorage.getItem('dinsos_bg_mode') : null) || 'video';
+  const showCustomPhoto = bgMode === 'photo' && !!customUserPhoto && customUserPhoto !== 'LOCAL_STORAGE_SAVED_PHOTO';
 
   useEffect(() => {
-    if (isVideoActive && activeVideo) {
-      setVideoError(false);
-      if (videoRef.current) {
-        videoRef.current.playbackRate = 1.0;
-        const playPromise = videoRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((err) => {
-            console.warn('Video autoplay info:', err);
-          });
-        }
+    if (!showCustomPhoto && videoRef.current) {
+      const vid = videoRef.current;
+      vid.defaultMuted = true;
+      vid.muted = true;
+      vid.playbackRate = 1.0;
+      
+      const playPromise = vid.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn('Video autoplay initial catch, retrying muted play:', err);
+          vid.muted = true;
+          vid.play().catch(() => {});
+        });
       }
     }
-  }, [isVideoActive, activeVideo]);
+  }, [showCustomPhoto, activeVideo]);
 
   const handleVideoError = () => {
+    console.warn('Primary video source failed, checking fallback');
     setVideoError(true);
   };
 
   return (
-    <section className="relative w-full h-[65vh] sm:h-[78vh] min-h-[360px] sm:min-h-[520px] md:-mt-[70px] md:pt-[70px] py-8 sm:py-0 flex items-center justify-center overflow-hidden bg-slate-950">
-      {/* Photo Background Layer (Active when bgMode is 'photo' or when video is unavailable) */}
-      {!isVideoActive && (
-        <div 
-          className="absolute inset-0 w-full h-full bg-cover bg-center z-0 transition-all duration-700 transform scale-105"
-          style={{ backgroundImage: `url(${activePhoto})` }}
-        />
-      )}
-
-      {/* Video Background Layer (Active ONLY when bgMode is 'video' and video is ready) */}
-      {isVideoActive && (
+    <section className="relative w-full h-[65vh] sm:h-[78vh] min-h-[360px] sm:min-h-[520px] md:-mt-[70px] md:pt-[70px] py-8 sm:py-0 flex items-center justify-center overflow-hidden bg-[#021f18]">
+      {/* Background Layer: Real Video by Default */}
+      {!showCustomPhoto ? (
         <video
           key={activeVideo}
           ref={videoRef}
@@ -90,11 +72,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGrid, appSet
           loop
           muted
           playsInline
+          webkit-playsinline="true"
           preload="auto"
           disablePictureInPicture
           onError={handleVideoError}
-          onCanPlay={(e) => {
-            e.currentTarget.play().catch(() => {});
+          onLoadedData={() => {
+            if (videoRef.current) {
+              videoRef.current.play().catch(() => {});
+            }
           }}
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-100 transition-opacity duration-700 brightness-[1.08] contrast-[1.10] saturate-[1.12]"
           style={{
@@ -104,6 +89,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGrid, appSet
             transform: 'translateZ(0)',
             WebkitTransform: 'translateZ(0)',
           }}
+        />
+      ) : (
+        /* Only shown if Admin specifically uploaded a custom real photo */
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center z-0 transition-all duration-700 transform scale-105"
+          style={{ backgroundImage: `url(${customUserPhoto})` }}
         />
       )}
 

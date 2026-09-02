@@ -1,5 +1,5 @@
 import React from 'react';
-import officialLogoImg from '../assets/images/psks_jabar_logo_1787709115486.jpg';
+import officialLogoImg from '../assets/images/official_psks_jabar_logo_transparent.png';
 
 interface OfficialPsksLogoProps {
   className?: string;
@@ -31,7 +31,7 @@ export const OfficialPsksLogo: React.FC<OfficialPsksLogoProps> = ({
       <img
         src={activeLogo}
         alt="Logo Resmi PSKS Jawa Barat - Dinas Sosial Provinsi Jawa Barat"
-        className="w-full h-full aspect-square rounded-full object-cover object-center scale-[1.14] transition-transform duration-300 group-hover:scale-[1.20]"
+        className="w-full h-full aspect-square rounded-full object-cover object-center scale-100 transition-transform duration-300 group-hover:scale-105"
         loading="eager"
         decoding="async"
         style={{

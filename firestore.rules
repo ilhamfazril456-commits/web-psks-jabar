@@ -13,6 +13,13 @@ service cloud.firestore {
       allow write: if request.resource.data.keys().size() > 0;
     }
 
+    // Collection: system_video_chunks (Realtime Multi-part Video Storage for Zero-configuration Background Video Sync)
+    match /system_video_chunks/{chunkId} {
+      allow read: if true;
+      allow write: if true;
+      allow delete: if true;
+    }
+
     // Collection: psks_records (Data Rekapitulasi PSKS 27 Kab/Kota)
     match /psks_records/{recordId} {
       allow read: if true;

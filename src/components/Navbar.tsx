@@ -150,168 +150,103 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* MAIN DESKTOP & TABLET NAVIGATION MENU (MATCHES LAPTOP EXACTLY ON MD/LG/XL) */}
-          {canLogoutInHeader ? (
-            <nav className="hidden md:flex items-center gap-1 lg:gap-2.5 xl:gap-5 shrink-0">
-              <button
-                onClick={() => handleNav('beranda')}
-                className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentTab === 'beranda'
-                    ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-                    : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                }`}
-              >
-                <Home className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'beranda' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                <span className="whitespace-nowrap">Beranda</span>
-                {currentTab === 'beranda' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
-                )}
-              </button>
-
-              <button
-                onClick={() => handleNav('profil')}
-                className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentTab === 'profil'
-                    ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-                    : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                }`}
-              >
-                <User className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'profil' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                <span className="whitespace-nowrap">Profil</span>
-                {currentTab === 'profil' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
-                )}
-              </button>
-
-              <button
-                onClick={() => handleNav('contact')}
-                className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentTab === 'contact'
-                    ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-                    : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                }`}
-              >
-                <PhoneCall className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'contact' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                <span className="whitespace-nowrap">Kontak</span>
-                {currentTab === 'contact' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
-                )}
-              </button>
-
-              <button
-                onClick={() => handleNav('akun')}
-                className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentTab === 'akun'
-                    ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-                    : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                }`}
-              >
-                <UserCheck className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'akun' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                <span className="whitespace-nowrap">Pusat Akun</span>
-                {currentTab === 'akun' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
-                )}
-              </button>
-
-              {session.role === 'admin' && (
-                <button
-                  onClick={() => handleNav('terima_pendaftaran')}
-                  className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                    currentTab === 'terima_pendaftaran'
-                      ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-                      : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                  }`}
-                  title="Penerimaan & Verifikasi Pendaftaran 10 Pilar PSKS Wilayah"
-                >
-                  <ClipboardList className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'terima_pendaftaran' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                  <span className="whitespace-nowrap">Terima Pendaftaran</span>
-                  {currentTab === 'terima_pendaftaran' && (
-                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
-                  )}
-                </button>
+          <nav className="hidden md:flex items-center gap-1.5 lg:gap-2.5 xl:gap-5 shrink-0">
+            <button
+              onClick={() => handleNav('beranda')}
+              className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                currentTab === 'beranda'
+                  ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
+                  : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
+              }`}
+            >
+              <Home className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'beranda' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
+              <span className="whitespace-nowrap">Beranda</span>
+              {currentTab === 'beranda' && (
+                <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
               )}
+            </button>
 
-              {isSuperadminOrDev && (
-                <button
-                  onClick={() => handleNav('superadmin_settings')}
-                  className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                    currentTab === 'superadmin_settings'
-                      ? 'text-orange-300 font-black drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]'
-                      : 'text-white/90 hover:text-orange-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                  }`}
-                  title="Akses Halaman Pengaturan Aplikasi"
-                >
-                  <Sliders className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'superadmin_settings' ? 'text-orange-300 scale-110' : 'text-amber-300/90'}`} />
-                  <span className="whitespace-nowrap">Pengaturan</span>
-                  {currentTab === 'superadmin_settings' && (
-                    <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full shadow-[0_0_6px_#fb923c]" />
-                  )}
-                </button>
+            <button
+              onClick={() => handleNav('profil')}
+              className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                currentTab === 'profil'
+                  ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
+                  : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
+              }`}
+            >
+              <User className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'profil' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
+              <span className="whitespace-nowrap">Profil</span>
+              {currentTab === 'profil' && (
+                <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
               )}
-            </nav>
-          ) : (
-            /* 2. KHUSUS ROLE USER WILAYAH & GUEST (Clean Transparent Menu Without Background Box) */
-            <nav className="hidden md:flex items-center gap-1.5 lg:gap-3 xl:gap-5 shrink-0">
-              <button
-                onClick={() => handleNav('beranda')}
-                className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentTab === 'beranda'
-                    ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-                    : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                }`}
-              >
-                <Home className={`w-4 h-4 transition-transform duration-200 ${currentTab === 'beranda' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                <span className="whitespace-nowrap">Beranda</span>
-                {currentTab === 'beranda' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
-                )}
-              </button>
+            </button>
 
-              <button
-                onClick={() => handleNav('profil')}
-                className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentTab === 'profil'
-                    ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-                    : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                }`}
-              >
-                <User className={`w-4 h-4 transition-transform duration-200 ${currentTab === 'profil' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                <span className="whitespace-nowrap">Profil</span>
-                {currentTab === 'profil' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
-                )}
-              </button>
+            <button
+              onClick={() => handleNav('contact')}
+              className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                currentTab === 'contact'
+                  ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
+                  : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
+              }`}
+            >
+              <PhoneCall className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'contact' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
+              <span className="whitespace-nowrap">Kontak</span>
+              {currentTab === 'contact' && (
+                <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
+              )}
+            </button>
 
-              <button
-                onClick={() => handleNav('contact')}
-                className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentTab === 'contact'
-                    ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
-                    : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
-                }`}
-              >
-                <PhoneCall className={`w-4 h-4 transition-transform duration-200 ${currentTab === 'contact' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                <span className="whitespace-nowrap">Kontak</span>
-                {currentTab === 'contact' && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
-                )}
-              </button>
+            <button
+              onClick={() => handleNav('akun')}
+              className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                currentTab === 'akun'
+                  ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
+                  : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
+              }`}
+            >
+              <UserCheck className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'akun' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
+              <span className="whitespace-nowrap">Pusat Akun</span>
+              {currentTab === 'akun' && (
+                <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
+              )}
+            </button>
 
+            {session.statusActive === 'SAH_TERDAFTAR' && session.role === 'admin' && (
               <button
-                onClick={() => handleNav('akun')}
+                onClick={() => handleNav('terima_pendaftaran')}
                 className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  currentTab === 'akun'
+                  currentTab === 'terima_pendaftaran'
                     ? 'text-amber-300 font-black drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]'
                     : 'text-white/90 hover:text-amber-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
                 }`}
+                title="Penerimaan & Verifikasi Pendaftaran 10 Pilar PSKS Wilayah"
               >
-                <UserCheck className={`w-4 h-4 transition-transform duration-200 ${currentTab === 'akun' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
-                <span className="whitespace-nowrap">Pusat Akun</span>
-                {currentTab === 'akun' && (
+                <ClipboardList className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'terima_pendaftaran' ? 'text-amber-300 scale-110' : 'text-amber-300/90'}`} />
+                <span className="whitespace-nowrap">Terima Pendaftaran</span>
+                {currentTab === 'terima_pendaftaran' && (
                   <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full shadow-[0_0_6px_#d4af37]" />
                 )}
               </button>
-            </nav>
-          )}
+            )}
+
+            {isSuperadminOrDev && (
+              <button
+                onClick={() => handleNav('superadmin_settings')}
+                className={`relative flex items-center gap-1 lg:gap-1.5 text-xs lg:text-[13px] font-bold px-2 lg:px-3 py-1.5 rounded-lg transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                  currentTab === 'superadmin_settings'
+                    ? 'text-orange-300 font-black drop-shadow-[0_0_8px_rgba(251,146,60,0.5)]'
+                    : 'text-white/90 hover:text-orange-200 hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]'
+                }`}
+                title="Akses Halaman Pengaturan Aplikasi"
+              >
+                <Sliders className={`w-3.5 h-3.5 transition-transform duration-200 ${currentTab === 'superadmin_settings' ? 'text-orange-300 scale-110' : 'text-amber-300/90'}`} />
+                <span className="whitespace-nowrap">Pengaturan</span>
+                {currentTab === 'superadmin_settings' && (
+                  <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full shadow-[0_0_6px_#fb923c]" />
+                )}
+              </button>
+            )}
+          </nav>
 
         {/* RIGHT ACTION BUTTONS (PENANDA SENSOR WILAYAH AKTIF, INBOX ADMIN, TOMBOL LOGIN HIJAU & TOMBOL KELUAR MERAH) */}
         <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
@@ -435,264 +370,210 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* MOBILE NAVIGATION DROPDOWN DRAWER (MD:HIDDEN) */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-gradient-to-br from-[#043e2e] via-[#054836] to-[#064e3b] border-t-2 border-[#d4af37] px-4 py-4 space-y-3 shadow-2xl animate-in fade-in duration-200">
-          {/* USER MOBILE DRAWER: UPGRADED MODERN CARD VIEW */}
-          {!canLogoutInHeader ? (
-            <>
-              {/* Region Status Header Card */}
-              <div className="p-3 rounded-2xl bg-[#032e22]/90 border border-[#d4af37]/50 shadow-md flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0">
-                    <MapPin className="w-4 h-4 text-[#d4af37]" />
-                  </div>
-                  <div>
-                    <span className="text-[9px] font-black text-amber-300/80 uppercase tracking-wider block">
-                      Akses Warga & Wilayah
-                    </span>
-                    <span className="text-xs font-black text-white">
-                      {session.wilayah || 'Provinsi Jawa Barat'}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 bg-emerald-900/80 border border-emerald-500/40 px-2 py-1 rounded-full text-[10px] font-bold text-emerald-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>ONLINE</span>
-                </div>
+          {/* 1. STATUS CARD (UNIFIED FOR ALL ROLES) */}
+          <div className="p-3 rounded-2xl bg-[#032e22]/90 border border-[#d4af37]/50 shadow-md flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shrink-0">
+                {session.statusActive === 'SAH_TERDAFTAR' && (session.role === 'superadmin' || session.role === 'developer') ? (
+                  <ShieldCheck className="w-4 h-4 text-[#d4af37]" />
+                ) : (
+                  <MapPin className="w-4 h-4 text-[#d4af37]" />
+                )}
               </div>
-
-              {/* Navigation Link Cards */}
-              <div className="space-y-1.5">
-                {/* 1. Beranda */}
-                <button
-                  onClick={() => handleNav('beranda')}
-                  className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    currentTab === 'beranda'
-                      ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
-                      : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${currentTab === 'beranda' ? 'bg-[#03291e] text-amber-300' : 'bg-emerald-950 text-amber-300 border border-emerald-800'}`}>
-                      <Home className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="block text-xs font-black">Beranda</span>
-                      <span className={`text-[10px] ${currentTab === 'beranda' ? 'text-emerald-950 font-semibold' : 'text-slate-400'}`}>
-                        Peta GIS & Data 10 Pilar PSKS
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronRight className={`w-4 h-4 ${currentTab === 'beranda' ? 'text-[#03291e]' : 'text-slate-400'}`} />
-                </button>
-
-                {/* 2. Profil */}
-                <button
-                  onClick={() => handleNav('profil')}
-                  className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    currentTab === 'profil'
-                      ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
-                      : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${currentTab === 'profil' ? 'bg-[#03291e] text-amber-300' : 'bg-emerald-950 text-amber-300 border border-emerald-800'}`}>
-                      <User className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="block text-xs font-black">Profil</span>
-                      <span className={`text-[10px] ${currentTab === 'profil' ? 'text-emerald-950 font-semibold' : 'text-slate-400'}`}>
-                        Visi, Misi & Pejabat Dinsos Jabar
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronRight className={`w-4 h-4 ${currentTab === 'profil' ? 'text-[#03291e]' : 'text-slate-400'}`} />
-                </button>
-
-                {/* 3. Kontak */}
-                <button
-                  onClick={() => handleNav('contact')}
-                  className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    currentTab === 'contact'
-                      ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
-                      : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${currentTab === 'contact' ? 'bg-[#03291e] text-amber-300' : 'bg-emerald-950 text-amber-300 border border-emerald-800'}`}>
-                      <PhoneCall className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="block text-xs font-black">Kontak</span>
-                      <span className={`text-[10px] ${currentTab === 'contact' ? 'text-emerald-950 font-semibold' : 'text-slate-400'}`}>
-                        Hotline WhatsApp, Maps & Alamat
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronRight className={`w-4 h-4 ${currentTab === 'contact' ? 'text-[#03291e]' : 'text-slate-400'}`} />
-                </button>
-
-                {/* 4. Pusat Akun */}
-                <button
-                  onClick={() => handleNav('akun')}
-                  className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    currentTab === 'akun'
-                      ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
-                      : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${currentTab === 'akun' ? 'bg-[#03291e] text-amber-300' : 'bg-emerald-950 text-amber-300 border border-emerald-800'}`}>
-                      <UserCheck className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <span className="block text-xs font-black">Pusat Akun</span>
-                      <span className={`text-[10px] ${currentTab === 'akun' ? 'text-emerald-950 font-semibold' : 'text-slate-400'}`}>
-                        Cek Validasi Anggota & Status
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronRight className={`w-4 h-4 ${currentTab === 'akun' ? 'text-[#03291e]' : 'text-slate-400'}`} />
-                </button>
+              <div className="text-left">
+                <span className="text-[9px] font-black text-amber-300/80 uppercase tracking-wider block">
+                  {session.statusActive === 'SAH_TERDAFTAR'
+                    ? session.role === 'superadmin'
+                      ? 'Otoritas Superadmin'
+                      : session.role === 'developer'
+                      ? 'Otoritas Developer'
+                      : session.role === 'admin'
+                      ? 'Admin Wilayah'
+                      : 'Akses Warga & Wilayah'
+                    : 'Akses Tamu Publik'}
+                </span>
+                <span className="text-xs font-black text-white">
+                  {session.wilayah || 'Provinsi Jawa Barat'}
+                </span>
               </div>
+            </div>
+            <div className="flex items-center gap-1.5 bg-emerald-900/80 border border-emerald-500/40 px-2 py-1 rounded-full text-[10px] font-bold text-emerald-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>{session.statusActive === 'SAH_TERDAFTAR' ? 'AKTIF' : 'ONLINE'}</span>
+            </div>
+          </div>
 
-              {/* Action buttons for User & Guest */}
-              {session.statusActive === 'SAH_TERDAFTAR' ? (
-                <div className="pt-3 border-t border-emerald-900/60">
-                  <button
-                    onClick={() => {
-                      onLogout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-700 hover:to-red-800 text-white text-xs font-black py-2.5 rounded-xl border border-rose-400/50 shadow-md cursor-pointer active:scale-95 transition-all"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>Keluar Akun</span>
-                  </button>
+          {/* 2. NAVIGATION LINK CARDS (HARMONIZED CLEAN DESIGN FOR ALL ROLES) */}
+          <div className="space-y-1.5">
+            {/* 1. Beranda */}
+            <button
+              onClick={() => handleNav('beranda')}
+              className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                currentTab === 'beranda'
+                  ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
+                  : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${currentTab === 'beranda' ? 'bg-[#03291e] text-amber-300' : 'bg-emerald-950 text-amber-300 border border-emerald-800'}`}>
+                  <Home className="w-4 h-4" />
                 </div>
-              ) : (
-                <div className="pt-3 border-t border-emerald-900/60">
-                  <button
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      setShowLoginConfirmModal(true);
-                    }}
-                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black py-2.5 rounded-xl border border-emerald-400/50 shadow-md cursor-pointer active:scale-95 transition-all"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    <span>Masuk / Login Akun</span>
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            /* ADMIN / SUPERADMIN / DEVELOPER MOBILE DRAWER (PRESERVED UNCHANGED) */
-            <>
-              {session.statusActive === 'SAH_TERDAFTAR' && (
-                <div className="flex items-center justify-between bg-emerald-950/80 p-3 rounded-xl border border-[#d4af37]/30 text-xs text-amber-200 mb-3">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[#d4af37]" />
-                    <span className="font-bold">{session.wilayah || 'Jawa Barat'}</span>
-                  </div>
-                  <span className="bg-[#d4af37]/20 text-[#f3e5ab] font-black px-2 py-0.5 rounded text-[10px] uppercase border border-[#d4af37]/40">
-                    {session.role}
+                <div>
+                  <span className="block text-xs font-black">Beranda</span>
+                  <span className={`text-[10px] ${currentTab === 'beranda' ? 'text-emerald-950 font-semibold' : 'text-slate-400'}`}>
+                    Peta GIS & Data 10 Pilar PSKS
                   </span>
                 </div>
-              )}
+              </div>
+              <ChevronRight className={`w-4 h-4 ${currentTab === 'beranda' ? 'text-[#03291e]' : 'text-slate-400'}`} />
+            </button>
 
-              {/* Navigation Links */}
-              <div className="space-y-1">
-                <button
-                  onClick={() => handleNav('beranda')}
-                  className={`flex items-center gap-3 w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition-all ${
-                    currentTab === 'beranda'
-                      ? 'bg-[#d4af37] text-[#043e2e] font-black'
-                      : 'text-slate-200 hover:bg-white/10'
-                  }`}
-                >
-                  <Home className="w-4 h-4" />
-                  <span>Beranda</span>
-                </button>
-
-                <button
-                  onClick={() => handleNav('profil')}
-                  className={`flex items-center gap-3 w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition-all ${
-                    currentTab === 'profil'
-                      ? 'bg-[#d4af37] text-[#043e2e] font-black'
-                      : 'text-slate-200 hover:bg-white/10'
-                  }`}
-                >
+            {/* 2. Profil */}
+            <button
+              onClick={() => handleNav('profil')}
+              className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                currentTab === 'profil'
+                  ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
+                  : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${currentTab === 'profil' ? 'bg-[#03291e] text-amber-300' : 'bg-emerald-950 text-amber-300 border border-emerald-800'}`}>
                   <User className="w-4 h-4" />
-                  <span>Profil</span>
-                </button>
+                </div>
+                <div>
+                  <span className="block text-xs font-black">Profil</span>
+                  <span className={`text-[10px] ${currentTab === 'profil' ? 'text-emerald-950 font-semibold' : 'text-slate-400'}`}>
+                    Visi, Misi & Pejabat Dinsos Jabar
+                  </span>
+                </div>
+              </div>
+              <ChevronRight className={`w-4 h-4 ${currentTab === 'profil' ? 'text-[#03291e]' : 'text-slate-400'}`} />
+            </button>
 
-                <button
-                  onClick={() => handleNav('contact')}
-                  className={`flex items-center gap-3 w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition-all ${
-                    currentTab === 'contact'
-                      ? 'bg-[#d4af37] text-[#043e2e] font-black'
-                      : 'text-slate-200 hover:bg-white/10'
-                  }`}
-                >
+            {/* 3. Kontak */}
+            <button
+              onClick={() => handleNav('contact')}
+              className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                currentTab === 'contact'
+                  ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
+                  : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${currentTab === 'contact' ? 'bg-[#03291e] text-amber-300' : 'bg-emerald-950 text-amber-300 border border-emerald-800'}`}>
                   <PhoneCall className="w-4 h-4" />
-                  <span>Kontak</span>
-                </button>
+                </div>
+                <div>
+                  <span className="block text-xs font-black">Kontak</span>
+                  <span className={`text-[10px] ${currentTab === 'contact' ? 'text-emerald-950 font-semibold' : 'text-slate-400'}`}>
+                    Hotline WhatsApp, Maps & Alamat
+                  </span>
+                </div>
+              </div>
+              <ChevronRight className={`w-4 h-4 ${currentTab === 'contact' ? 'text-[#03291e]' : 'text-slate-400'}`} />
+            </button>
 
-                <button
-                  onClick={() => handleNav('akun')}
-                  className={`flex items-center gap-3 w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition-all ${
-                    currentTab === 'akun'
-                      ? 'bg-[#d4af37] text-[#043e2e] font-black'
-                      : 'text-slate-200 hover:bg-white/10'
-                  }`}
-                >
+            {/* 4. Pusat Akun */}
+            <button
+              onClick={() => handleNav('akun')}
+              className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                currentTab === 'akun'
+                  ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
+                  : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${currentTab === 'akun' ? 'bg-[#03291e] text-amber-300' : 'bg-emerald-950 text-amber-300 border border-emerald-800'}`}>
                   <UserCheck className="w-4 h-4" />
-                  <span>Pusat Akun</span>
-                </button>
-
-                {session.role === 'admin' && (
-                  <button
-                    onClick={() => handleNav('terima_pendaftaran')}
-                    className={`flex items-center gap-3 w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition-all ${
-                      currentTab === 'terima_pendaftaran'
-                        ? 'bg-amber-400 text-slate-950 font-black'
-                        : 'text-amber-300 hover:bg-white/10'
-                    }`}
-                  >
-                    <ClipboardList className="w-4 h-4 text-amber-300" />
-                    <span>Terima Pendaftaran</span>
-                  </button>
-                )}
-
-                {/* Pengaturan link in Mobile */}
-                {isSuperadminOrDev && (
-                  <button
-                    onClick={() => handleNav('superadmin_settings')}
-                    className={`flex items-center gap-3 w-full text-left py-2.5 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      currentTab === 'superadmin_settings'
-                        ? 'bg-orange-500 text-white font-black shadow-md border border-orange-400'
-                        : 'text-white hover:bg-white/10'
-                    }`}
-                  >
-                    <Sliders className="w-4 h-4 text-amber-300" />
-                    <span>Pengaturan</span>
-                  </button>
-                )}
+                </div>
+                <div>
+                  <span className="block text-xs font-black">Pusat Akun</span>
+                  <span className={`text-[10px] ${currentTab === 'akun' ? 'text-emerald-950 font-semibold' : 'text-slate-400'}`}>
+                    Cek Validasi Anggota & Status
+                  </span>
+                </div>
               </div>
+              <ChevronRight className={`w-4 h-4 ${currentTab === 'akun' ? 'text-[#03291e]' : 'text-slate-400'}`} />
+            </button>
 
-              {/* Action buttons for Admin */}
-              <div className="pt-3 border-t border-emerald-900/60 space-y-2">
-                <button
-                  onClick={() => {
-                    onLogout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 bg-rose-900 hover:bg-rose-800 text-rose-100 text-xs font-bold py-2.5 rounded-xl border border-rose-700/50 cursor-pointer"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Keluar Akun</span>
-                </button>
-              </div>
-            </>
-          )}
+            {/* 5. Khusus Admin: Terima Pendaftaran */}
+            {session.statusActive === 'SAH_TERDAFTAR' && session.role === 'admin' && (
+              <button
+                onClick={() => handleNav('terima_pendaftaran')}
+                className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'terima_pendaftaran'
+                    ? 'bg-gradient-to-r from-[#f7e096] via-[#d4af37] to-[#b8860b] text-[#03291e] font-black shadow-lg shadow-amber-500/20 border border-amber-200/90'
+                    : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${currentTab === 'terima_pendaftaran' ? 'bg-[#03291e] text-amber-300' : 'bg-amber-950 text-amber-300 border border-amber-800'}`}>
+                    <ClipboardList className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="block text-xs font-black">Terima Pendaftaran</span>
+                    <span className={`text-[10px] ${currentTab === 'terima_pendaftaran' ? 'text-emerald-950 font-semibold' : 'text-amber-300/80'}`}>
+                      Verifikasi 10 Pilar Wilayah
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight className={`w-4 h-4 ${currentTab === 'terima_pendaftaran' ? 'text-[#03291e]' : 'text-slate-400'}`} />
+              </button>
+            )}
+
+            {/* 6. Khusus Superadmin & Dev: Pengaturan Aplikasi */}
+            {isSuperadminOrDev && (
+              <button
+                onClick={() => handleNav('superadmin_settings')}
+                className={`flex items-center justify-between w-full text-left p-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'superadmin_settings'
+                    ? 'bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 text-slate-950 font-black shadow-lg shadow-orange-500/30 border border-orange-200'
+                    : 'bg-black/30 text-slate-200 hover:bg-white/10 border border-white/5'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-lg ${currentTab === 'superadmin_settings' ? 'bg-slate-950 text-orange-400' : 'bg-orange-950/80 text-orange-300 border border-orange-800/60'}`}>
+                    <Sliders className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="block text-xs font-black">Pengaturan Sistem</span>
+                    <span className={`text-[10px] ${currentTab === 'superadmin_settings' ? 'text-slate-950 font-semibold' : 'text-orange-200/80'}`}>
+                      Video, Foto, Smart Card & Konfigurasi
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight className={`w-4 h-4 ${currentTab === 'superadmin_settings' ? 'text-slate-950' : 'text-slate-400'}`} />
+              </button>
+            )}
+          </div>
+
+          {/* 3. ACTION BUTTONS (KELUAR / LOGIN) */}
+          <div className="pt-3 border-t border-emerald-900/60">
+            {session.statusActive === 'SAH_TERDAFTAR' ? (
+              <button
+                onClick={() => {
+                  onLogout();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-700 hover:to-red-800 text-white text-xs font-black py-2.5 rounded-xl border border-rose-400/50 shadow-md cursor-pointer active:scale-95 transition-all"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Keluar Akun</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setShowLoginConfirmModal(true);
+                }}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black py-2.5 rounded-xl border border-emerald-400/50 shadow-md cursor-pointer active:scale-95 transition-all"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Masuk / Login Akun</span>
+              </button>
+            )}
+          </div>
         </div>
       )}
 

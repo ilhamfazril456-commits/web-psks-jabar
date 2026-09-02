@@ -18,10 +18,14 @@ import {
   HelpCircle,
   Eye,
   RotateCcw,
-  Fingerprint
+  Fingerprint,
+  Copy,
+  Check,
+  AlertCircle
 } from 'lucide-react';
 import { SmartCardGraphic } from './SmartCardGraphic';
 import { UserSession } from '../types';
+import { PERMANENT_SUPERADMIN_QR_TOKEN, PERMANENT_DEVELOPER_QR_TOKEN } from '../utils/qrAuth';
 
 interface SmartAccessCardSectionProps {
   session?: UserSession;
@@ -30,9 +34,60 @@ interface SmartAccessCardSectionProps {
 export const SmartAccessCardSection: React.FC<SmartAccessCardSectionProps> = ({ session }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'qr' | 'nfc'>('all');
   const [cardFlipped, setCardFlipped] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
+  const [isNfcWriting, setIsNfcWriting] = useState(false);
+  const [nfcWriteStatus, setNfcWriteStatus] = useState<string | null>(null);
+  const [nfcWriteError, setNfcWriteError] = useState<string | null>(null);
 
   const userRole = session?.role || 'superadmin';
   const userName = session?.nama || 'Superadmin Dinsos Jabar';
+
+  const tokenToProgram = userRole === 'developer' ? PERMANENT_DEVELOPER_QR_TOKEN : PERMANENT_SUPERADMIN_QR_TOKEN;
+  const baseUrl = typeof window !== 'undefined' ? `${window.location.origin}` : 'https://web-psks-jabar.vercel.app';
+  const nfcTargetUrl = `${baseUrl}/?smartcard_auth=${encodeURIComponent(tokenToProgram)}`;
+
+  const handleCopyNfcUrl = () => {
+    try {
+      navigator.clipboard.writeText(nfcTargetUrl);
+      setCopiedUrl(true);
+      setTimeout(() => setCopiedUrl(false), 2500);
+    } catch (_) {}
+  };
+
+  const handleWriteNfcCard = async () => {
+    setNfcWriteError(null);
+    setNfcWriteStatus('Mempersiapkan sensor NFC... Silakan tempelkan kartu 13,56 MHz ke bagian belakang HP.');
+    setIsNfcWriting(true);
+
+    if (typeof window === 'undefined' || !('NDEFReader' in window)) {
+      setIsNfcWriting(false);
+      setNfcWriteError('Browser atau perangkat ini belum mendukung Web NFC API secara langsung. Silakan gunakan aplikasi gratis "NFC Tools" di HP dengan menyalin URL payload di bawah.');
+      return;
+    }
+
+    try {
+      const ndef = new (window as any).NDEFReader();
+      await ndef.write({
+        records: [
+          { recordType: 'url', data: nfcTargetUrl },
+          { recordType: 'text', data: tokenToProgram }
+        ]
+      });
+
+      setIsNfcWriting(false);
+      setNfcWriteStatus('✅ Berhasil! Kartu Smart Card NFC 13,56 MHz telah sukses diprogram. Sekarang kartu ini dapat ditempelkan ke HP mana saja untuk membuka web & login otomatis sebagai Superadmin!');
+      
+      try {
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+          navigator.vibrate([80, 50, 100]);
+        }
+      } catch (_) {}
+    } catch (err: any) {
+      console.warn('NFC Write error:', err);
+      setIsNfcWriting(false);
+      setNfcWriteError(`Gagal menulis kartu NFC: ${err.message || 'Izin NFC ditolak atau kartu bergeser terlalu cepat.'}`);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fadeIn">
@@ -352,6 +407,133 @@ export const SmartAccessCardSection: React.FC<SmartAccessCardSectionProps> = ({ 
           </div>
         </div>
       </div>
+
+      {/* 5. PEMROGRAMAN KARTU SMART CARD NFC 13.56 MHz (ONE-TOUCH & NFC TOOLS) - KHUSUS DEVELOPER */}
+      {(userRole === 'developer' || session?.isDeveloper) && (
+        <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 rounded-3xl border-2 border-[#d4af37] p-6 sm:p-7 shadow-xl text-white space-y-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-[#043e2e] text-[#d4af37] border border-[#d4af37]/40 shadow-lg">
+                <Radio className="w-6 h-6 animate-pulse" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-black bg-amber-400/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-400/40">
+                    MODUL KHUSUS DEVELOPER
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400">13,56 MHz (NTAG / MIFARE)</span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-black text-white mt-0.5">
+                  Pemrograman Chip Smart Card NFC 13,56 MHz
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
+            Gunakan modul ini untuk memasukkan data login instan ke dalam kartu NFC fisik berfrekuensi 13,56 MHz Anda. Begitu kartu didekatkan ke HP manapun yang berfitur NFC, HP akan langsung membuka browser dan login otomatis ke akun <strong className="text-amber-300">{userName}</strong> tanpa perlu membuka website terlebih dahulu.
+          </p>
+
+          {/* INTERACTIVE ACTIONS */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* OPTION A: DIRECT WEB NFC WRITER */}
+            <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-4 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-amber-300 font-black text-xs">
+                  <Zap className="w-4 h-4" />
+                  <span>OPSI 1: Tulis Otomatis via Browser (Chrome Android)</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Klik tombol di bawah, lalu tempelkan kartu fisik ke bagian belakang HP Anda saat diminta.
+                </p>
+              </div>
+
+              {nfcWriteStatus && (
+                <div className="p-3 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-medium leading-relaxed animate-fadeIn">
+                  {nfcWriteStatus}
+                </div>
+              )}
+
+              {nfcWriteError && (
+                <div className="p-3 rounded-xl bg-red-950/80 border border-red-500/50 text-red-300 text-xs font-medium leading-relaxed animate-fadeIn flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span>{nfcWriteError}</span>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={handleWriteNfcCard}
+                disabled={isNfcWriting}
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white text-xs font-black flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer disabled:opacity-50"
+              >
+                <Radio className="w-4 h-4" />
+                <span>{isNfcWriting ? 'Mendengarkan Sensor NFC... Dekatkan Kartu' : 'Tulis ke Kartu Smart Card NFC (Web NFC)'}</span>
+              </button>
+            </div>
+
+            {/* OPTION B: COPY NDEF RECORD FOR NFC TOOLS APP */}
+            <div className="p-5 rounded-2xl bg-slate-800/80 border border-slate-700 space-y-4 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-amber-300 font-black text-xs">
+                  <Smartphone className="w-4 h-4" />
+                  <span>OPSI 2: Tulis via Aplikasi "NFC Tools" (Android / iPhone)</span>
+                </div>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Salin tautan NDEF Payload resmi di bawah untuk ditulis menggunakan aplikasi NFC Tools:
+                </p>
+                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-700 font-mono text-[10px] text-emerald-300 break-all select-all">
+                  {nfcTargetUrl}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCopyNfcUrl}
+                className="w-full py-3 px-4 rounded-xl bg-[#043e2e] hover:bg-[#06533e] border border-[#d4af37] text-[#d4af37] text-xs font-black flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+              >
+                {copiedUrl ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-400" />
+                    <span>Tautan Payload Berhasil Disalin!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-4 h-4" />
+                    <span>Salin Tautan Payload NDEF</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* STEP-BY-STEP NFC TOOLS GUIDE */}
+          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+            <div className="flex items-center gap-2 text-xs font-black text-amber-300">
+              <Info className="w-4 h-4" />
+              <span>PANDUAN PRAKTIS PROGRAM KARTU DENGAN APLIKASI GRATIS "NFC TOOLS":</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-[11px] text-slate-300">
+              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                <span className="font-bold text-amber-300 block">Langkah 1:</span>
+                <span>Download aplikasi <strong>NFC Tools</strong> di Play Store / App Store, lalu buka menu <strong>Write (Tulis)</strong>.</span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                <span className="font-bold text-amber-300 block">Langkah 2:</span>
+                <span>Pilih <strong>Add a record (Tambah Catatan)</strong> ➔ Pilih <strong>URL / URI</strong>.</span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                <span className="font-bold text-amber-300 block">Langkah 3:</span>
+                <span>Paste (tempel) tautan yang telah disalin di atas ke dalam kolom URL, lalu klik <strong>OK</strong>.</span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                <span className="font-bold text-emerald-400 block">Langkah 4: Selesai!</span>
+                <span>Klik <strong>Write / 1 Bytes</strong> lalu tempelkan kartu Smart Card 13,56 MHz ke belakang HP.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -97,6 +97,16 @@
         "maintenanceMsgSuperadmin": { "type": "string" }
       }
     },
+    "system_video_chunks": {
+      "title": "System Video Chunks",
+      "description": "Potongan data multi-part video latar belakang untuk sinkronisasi realtime",
+      "type": "object",
+      "properties": {
+        "index": { "type": "number" },
+        "data": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      }
+    },
     "registration_submissions": {
       "title": "Registration Submissions",
       "description": "Antrean verifikasi pendaftaran mandiri anggota 10 Pilar PSKS",

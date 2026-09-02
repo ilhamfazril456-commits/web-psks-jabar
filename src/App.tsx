@@ -68,6 +68,8 @@ import {
 import { db, handleFirestoreError, isQuotaError, OperationType } from './lib/firebase';
 import { collection, onSnapshot, doc, setDoc, deleteDoc, getDocFromServer } from 'firebase/firestore';
 import { recordSystemActivity } from './lib/activityLogger';
+import { subscribeToRealtimeVideo } from './lib/videoSync';
+import { validateQRCardPayload } from './utils/qrAuth';
 
 function cleanFirestoreData<T extends Record<string, any>>(obj: T): Record<string, any> {
   const cleaned: Record<string, any> = {};
@@ -292,6 +294,88 @@ export default function App() {
     );
 
     return () => unsubscribe();
+  }, []);
+
+  // Realtime Sync Video Background across all connected devices
+  useEffect(() => {
+    const unsubVideo = subscribeToRealtimeVideo((videoBase64) => {
+      setAppSettings((prev) => ({
+        ...prev,
+        bgVideoUrl: videoBase64,
+        bgMode: 'video',
+      }));
+    });
+    return () => unsubVideo();
+  }, []);
+
+  // Instant Smart Card NFC 13.56 MHz Auto-Login Handler on URL Tap
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+
+      const nfcToken =
+        urlParams.get('smartcard_auth') ||
+        urlParams.get('nfc_auth') ||
+        urlParams.get('nfc_key') ||
+        urlParams.get('nfc_token') ||
+        urlParams.get('nfc') ||
+        hashParams.get('smartcard_auth') ||
+        hashParams.get('nfc_auth') ||
+        hashParams.get('nfc');
+
+      if (nfcToken) {
+        const authResult = validateQRCardPayload(nfcToken);
+        if (authResult && authResult.valid && authResult.role) {
+          // Play success chime & haptic vibration
+          try {
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+              navigator.vibrate([60, 40, 90]);
+            }
+            const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+            if (AudioContextClass) {
+              const ctx = new AudioContextClass();
+              [1400, 1800, 2200].forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.08);
+                gain.gain.setValueAtTime(0.001, ctx.currentTime + i * 0.08);
+                gain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + i * 0.08 + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.1);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + i * 0.08);
+                osc.stop(ctx.currentTime + i * 0.08 + 0.12);
+              });
+            }
+          } catch (_) {}
+
+          handleLogin(authResult.role, authResult.nama || 'Superadmin Jabar', authResult.wilayah || 'PROVINSI JAWA BARAT');
+          recordSystemActivity({
+            session: {
+              role: authResult.role,
+              nama: authResult.nama || 'Superadmin Jabar',
+              wilayah: authResult.wilayah || 'PROVINSI JAWA BARAT',
+              statusActive: 'SAH_TERDAFTAR',
+              isDeveloper: authResult.role === 'developer',
+            },
+            category: 'SYSTEM',
+            actionType: 'UPDATE',
+            targetCollection: 'app_settings',
+            targetId: 'smart_card_nfc_auth',
+            details: `Akses Login Instan Terverifikasi via Smart Card NFC 13.56 MHz (${authResult.nama})`,
+          });
+
+          // Clean URL params seamlessly
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }
+      }
+    } catch (e) {
+      console.warn('Smart Card NFC auto-login error:', e);
+    }
   }, []);
 
   const handleSaveAppSettings = async (newSettings: AppSettings) => {

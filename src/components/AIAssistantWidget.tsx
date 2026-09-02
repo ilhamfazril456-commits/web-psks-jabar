@@ -524,14 +524,20 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
     ]);
   }, [session?.nama, session?.wilayah, session?.role, session?.statusActive, currentRole, isDeveloperUser]);
 
+  // Close widget helper to ensure all states cleanly reset
+  const closeWidget = () => {
+    setIsOpen(false);
+    setIsCatalogOpen(false);
+    setIsHovered(false);
+  };
+
   // Click outside listener (Safe mouse detection for desktop, avoids mobile touch jitter)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       if (!target || !(target instanceof Node) || !target.isConnected) return;
       if (widgetRef.current && !widgetRef.current.contains(target)) {
-        setIsOpen(false);
-        setIsCatalogOpen(false);
+        closeWidget();
       }
     };
 
@@ -559,8 +565,10 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
     setIsHovered(false);
     if (!isOpen) {
       setRotationSeed((prev) => prev + 1);
+      setIsOpen(true);
+    } else {
+      closeWidget();
     }
-    setIsOpen(!isOpen);
   };
 
   const handleSendMessage = async (customText?: string) => {
@@ -781,10 +789,7 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => {
-              setIsOpen(false);
-              setIsCatalogOpen(false);
-            }}
+            onClick={closeWidget}
             className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px] z-40 sm:hidden"
             aria-hidden="true"
           />
@@ -919,10 +924,7 @@ export const AIAssistantWidget: React.FC<AIAssistantWidgetProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setIsOpen(false);
-                    setIsCatalogOpen(false);
-                  }}
+                  onClick={closeWidget}
                   className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800/80 rounded-lg transition-all cursor-pointer"
                   title="Tutup Chat"
                 >

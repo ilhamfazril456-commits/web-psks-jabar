@@ -82,6 +82,7 @@ import { OfficialPsksLogo } from './OfficialPsksLogo';
 import { OFFICIAL_KADINAS_PHOTO } from '../assets/officialKadinasPhoto';
 import { DEFAULT_PILLAR_DATA, DEFAULT_ADMIN_ACCOUNTS } from '../data/initialData';
 import { SmartAccessCardSection } from './SmartAccessCardSection';
+import { uploadVideoChunksToFirestore } from '../lib/videoSync';
 
 interface DeveloperControlPanelProps {
   isOpen?: boolean;
@@ -679,7 +680,9 @@ export const DeveloperControlPanel: React.FC<DeveloperControlPanelProps> = ({
     }
   };
 
-  const handleFileUpload = (
+  const [videoUploadProgress, setVideoUploadProgress] = useState<number | null>(null);
+
+  const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     targetField: 'bgVideoUrl' | 'bgPhotoUrl' | 'kadinasPhotoUrl' | 'logoUrl'
   ) => {
@@ -689,6 +692,18 @@ export const DeveloperControlPanel: React.FC<DeveloperControlPanelProps> = ({
     if (file.size > 35 * 1024 * 1024) {
       alert('Ukuran berkas terlalu besar. Maksimal 35MB.');
       return;
+    }
+
+    if (targetField === 'bgVideoUrl') {
+      try {
+        setVideoUploadProgress(15);
+        await uploadVideoChunksToFirestore(file, (pct) => setVideoUploadProgress(pct));
+        setSaveSuccessMsg('✅ Video Latar Belakang Berhasil Diupload & Tersinkron Realtime ke Semua Perangkat!');
+        setTimeout(() => setVideoUploadProgress(null), 3000);
+      } catch (err: any) {
+        console.warn('Video chunks upload warning:', err);
+        setVideoUploadProgress(null);
+      }
     }
 
     const reader = new FileReader();
@@ -1261,15 +1276,25 @@ export const DeveloperControlPanel: React.FC<DeveloperControlPanelProps> = ({
                         <span className="text-[11px] text-slate-500 font-medium">Atau upload dari komputer/HP:</span>
                         <label className="px-3.5 py-2 rounded-xl bg-[#043e2e] hover:bg-[#06533e] text-[#d4af37] border border-[#d4af37] text-xs font-black flex items-center gap-2 cursor-pointer shadow-sm transition-all shrink-0">
                           <Upload className="w-3.5 h-3.5" />
-                          <span>Upload Video File</span>
+                          <span>{videoUploadProgress !== null ? `Sinkronisasi... ${videoUploadProgress}%` : 'Upload Video File'}</span>
                           <input
                             type="file"
                             accept="video/mp4,video/webm,video/*"
+                            disabled={videoUploadProgress !== null}
                             onChange={(e) => handleFileUpload(e, 'bgVideoUrl')}
                             className="hidden"
                           />
                         </label>
                       </div>
+
+                      {videoUploadProgress !== null && (
+                        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden shadow-inner">
+                          <div
+                            className="bg-gradient-to-r from-emerald-500 via-amber-400 to-[#d4af37] h-full transition-all duration-300 rounded-full"
+                            style={{ width: `${videoUploadProgress}%` }}
+                          />
+                        </div>
+                      )}
 
                       {formData.bgVideoUrl && (
                         <div className="pt-2">
